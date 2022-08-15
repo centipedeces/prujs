@@ -33,6 +33,46 @@ class EvilCircle extends Shape {
         this.color = 'white';
         this.size = 10;
     }
+
+    draw() {
+        ctx.beginPath();
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = 5;
+        ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI);
+        ctx.stroke();
+    }
+
+    update() {
+        if ((this.x + this.size) >= width) {
+           this.x = this.x - 1;
+        }
+  
+        if ((this.x - this.size) <= 0) {
+           this.x = this.x + 1;
+        }
+  
+        if ((this.y + this.size) >= height) {
+           this.y = this.y - 1;
+        }
+  
+        if ((this.y - this.size) <= 0) {
+           this.y = this.y + 1;
+        }
+    }
+
+    collisionDetect() {
+        for (const ball of balls) {
+           if (ball.exists) {
+              const dx = this.x - ball.x;
+              const dy = this.y - ball.y;
+              const distance = Math.sqrt(dx * dx + dy * dy);
+  
+              if (distance < this.size + ball.size) {
+                ball.exists = false;
+              }
+           }
+        }
+    }    
 }
 
 class Ball extends Shape {
@@ -85,8 +125,24 @@ class Ball extends Shape {
          }
       }
    }
-
 }
+
+window.addEventListener('Keydown', (e) => {
+    switch(e.key) {
+        case a:
+            this.x -= this.velX;
+            break;
+        case d:
+            evil.x += 1;
+            break;
+        case w:
+            this.y -= this.velY;
+            break;
+        case s:
+            this.y += this.velY;
+            break;
+    }
+});
 
 const balls = [];
 
@@ -106,16 +162,22 @@ while (balls.length < 25) {
   balls.push(ball);
 }
 
+const evil = new EvilCircle(10,10);
+
 function loop() {
    ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
    ctx.fillRect(0, 0,  width, height);
 
    for (const ball of balls) {
-     ball.draw();
-     ball.update();
-     ball.collisionDetect();
+        if (ball.exists) {
+            ball.draw();
+            ball.update();
+            ball.collisionDetect();
+            evil.collisionDetect();
+        }
    }
-
+   evil.update();
+   evil.draw();
    requestAnimationFrame(loop);
 }
 
