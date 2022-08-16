@@ -32,6 +32,22 @@ class EvilCircle extends Shape {
         super(x, y, 20, 20);
         this.color = 'white';
         this.size = 10;
+        window.addEventListener('Keydown', (e) => {
+         switch(e.key) {
+             case 'a':
+                 this.x -= this.velX;
+                 break;
+             case 'd':
+                 evil.x += this.velX;
+                 break;
+             case 'w':
+                 this.y -= this.velY;
+                 break;
+             case 's':
+                 this.y += this.velY;
+                 break;
+         }
+      });
     }
 
     draw() {
@@ -127,22 +143,7 @@ class Ball extends Shape {
    }
 }
 
-window.addEventListener('Keydown', (e) => {
-    switch(e.key) {
-        case a:
-            this.x -= this.velX;
-            break;
-        case d:
-            evil.x += 1;
-            break;
-        case w:
-            this.y -= this.velY;
-            break;
-        case s:
-            this.y += this.velY;
-            break;
-    }
-});
+
 
 const balls = [];
 
